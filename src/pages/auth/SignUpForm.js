@@ -44,6 +44,7 @@ const SignUpForm = () => {
       setErrors(err.response?.data);
     }
   };
+  console.log("errors is:", errors);
 
   return (
     <Row className={styles.Row}>
