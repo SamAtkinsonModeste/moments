@@ -1,5 +1,5 @@
-import React from "react";
-
+import React, { useContext, useState } from "react";
+import axios from "axios";
 import {
   Form,
   Button,
@@ -9,23 +9,24 @@ import {
   Container,
   Alert,
 } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 import styles from "../../styles/SignInUpForm.module.css";
 import btnStyles from "../../styles/Button.module.css";
 import appStyles from "../../App.module.css";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import axios from "axios";
+import { SetCurrentUserContext } from "../../App";
 
 const SignInForm = () => {
-  //   Add your component logic here
-  const [signInData, setSignInData] = React.useState({
+  const setCurrentUser = useContext(SetCurrentUserContext);
+  const [signInData, setSignInData] = useState({
     username: "",
     password: "",
   });
 
   const { username, password } = signInData;
+  const [errors, setErrors] = useState({});
   const history = useHistory();
+
   const handleChange = (event) => {
     setSignInData({
       ...signInData,
@@ -36,9 +37,12 @@ const SignInForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await axios.post("/dj-rest-auth/login/", signInData);
+      const { data } = await axios.post("/dj-rest-auth/login/", signInData);
+      setCurrentUser(data.user);
       history.push("/");
-    } catch (err) {}
+    } catch (err) {
+      setErrors(err.response?.data);
+    }
   };
 
   return (
@@ -58,6 +62,11 @@ const SignInForm = () => {
                 onChange={handleChange}
               />
             </Form.Group>
+            {errors.username?.map((message, idx) => (
+              <Alert variant="warning" key={idx}>
+                {message}
+              </Alert>
+            ))}
 
             <Form.Group controlId="password">
               <Form.Label className="d-none">Password</Form.Label>
@@ -70,6 +79,11 @@ const SignInForm = () => {
                 onChange={handleChange}
               />
             </Form.Group>
+            {errors.password?.map((message, idx) => (
+              <Alert variant="warning" key={idx}>
+                {message}
+              </Alert>
+            ))}
 
             <Button
               className={`${btnStyles.Button} ${btnStyles.Wide} ${btnStyles.Bright}`}
@@ -77,6 +91,11 @@ const SignInForm = () => {
             >
               Sign In
             </Button>
+            {errors.non_field_errors?.map((message, idx) => (
+              <Alert key={idx} varient="warning" className="mt-3">
+                {message}
+              </Alert>
+            ))}
           </Form>
         </Container>
         <Container className={`mt-3 ${appStyles.Content}`}>
