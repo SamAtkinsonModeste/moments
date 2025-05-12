@@ -6,11 +6,7 @@ const Avatar = ({ src, height = 45, text }) => {
     <span>
       <img
         className={styles.Avatar}
-        src={
-          src && src.startsWith("http")
-            ? src
-            : process.env.PUBLIC_URL + "/default-profile.jpg"
-        }
+        src={src}
         height={height}
         width={height}
         alt="avatar"
