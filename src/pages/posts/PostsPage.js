@@ -5,35 +5,33 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
 
-import { Post } from "./Post";
-import Asset from "../../components/Asset";
-
 import appStyles from "../../App.module.css";
 import styles from "../../styles/PostsPage.module.css";
-import { useLocation } from "react-router-dom";
-import { axiosReq } from "../../api/axiosDefaults";
+import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
 
+import { axiosReq } from "../../api/axiosDefaults";
+import { Post } from "./Post";
 import NoResults from "../../assets/no-results.png";
+import Asset from "../../components/Asset";
 
 function PostsPage({ message, filter = "" }) {
-  const [posts, setPosts] = useState({ results: [] });
-  const [hasLoaded, setHasLoaded] = useState(false);
-  const { pathname } = useLocation();
+  const [posts, setPosts] = useState({ results: [] }); //2
+  const [hasLoaded, setHasLoaded] = useState(false); //3
+  const { pathname } = useLocation(); // 4 & 5
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const { data } = await axiosReq.get(`/posts/?${filter}`);
-        setPosts(data);
-        setHasLoaded(true);
+        const { data } = await axiosReq.get(`/posts/?${filter}`); // 7 & 8
+        setPosts(data); // 9
+        setHasLoaded(true); // 10
       } catch (err) {
-        console.log(err);
+        console.error(err); //11
       }
     };
-
-    setHasLoaded(false);
-    fetchPosts();
-  }, [filter, pathname]);
+    setHasLoaded(false); // 13
+    fetchPosts(); // 12
+  }, [filter, pathname]); // 6 [filter, message] - 12
 
   return (
     <Row className="h-100">
