@@ -15,28 +15,48 @@ import NoResults from "../../assets/no-results.png";
 import Asset from "../../components/Asset";
 
 function PostsPage({ message, filter = "" }) {
-  const [posts, setPosts] = useState({ results: [] }); //2
-  const [hasLoaded, setHasLoaded] = useState(false); //3
-  const { pathname } = useLocation(); // 4 & 5
+  const [posts, setPosts] = useState({ results: [] });
+  const [hasLoaded, setHasLoaded] = useState(false);
+  const { pathname } = useLocation();
+
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const { data } = await axiosReq.get(`/posts/?${filter}`); // 7 & 8
-        setPosts(data); // 9
-        setHasLoaded(true); // 10
+        const { data } = await axiosReq.get(`/posts/?${filter}search=${query}`);
+        setPosts(data);
+        setHasLoaded(true);
       } catch (err) {
-        console.error(err); //11
+        console.error(err);
       }
     };
-    setHasLoaded(false); // 13
-    fetchPosts(); // 12
-  }, [filter, pathname]); // 6 [filter, message] - 12
+    setHasLoaded(false);
+    const timer = setTimeout(() => {
+      fetchPosts();
+    }, 1000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [filter, query, pathname]);
 
   return (
     <Row className="h-100">
       <Col className="py-2 p-0 p-lg-2" lg={8}>
         <p>Popular profiles mobile</p>
+        <i className={`fas fa-search ${styles.SearchIcon}`} />
+        <Form
+          className={styles.SearchBar}
+          onSubmit={(evt) => evt.preventDefault()}
+        >
+          <Form.Control
+            type="text"
+            className="mr-sm-2"
+            placeholder="Search Posts"
+            value={query}
+            onChange={(evt) => setQuery(evt.target.value)}
+          />
+        </Form>
         {hasLoaded ? (
           <>
             {posts.results.length ? (
