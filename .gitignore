@@ -427,3 +427,5 @@ yarn-error.log*
 #local files
 .vscode/settings.json
 nogrok2.txt
+jest-globals.js
+jest.config.js
