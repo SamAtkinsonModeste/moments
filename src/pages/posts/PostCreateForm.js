@@ -13,12 +13,14 @@ import appStyles from "../../App.module.css";
 import btnStyles from "../../styles/Button.module.css";
 import Asset from "../../components/Asset";
 import { Alert, Image } from "react-bootstrap";
-import { useHistory } from "react-router-dom";
+import { useHistory } from "react-router";
 import { axiosReq } from "../../api/axiosDefaults";
+import { useRedirect } from "src/hooks/useRedirect";
 
 function PostCreateForm() {
-  const [errors, setErrors] = useState({});
+  useRedirect("loggedOut");
 
+  const [errors, setErrors] = useState({});
   const [postData, setPostData] = useState({
     title: "",
     content: "",
@@ -48,12 +50,14 @@ function PostCreateForm() {
   const handleSubmit = async (evt) => {
     evt.preventDefault();
     const formData = new FormData();
+    console.log("Image file:", imageInput.current.files[0]); // 🐛 Check if image file is present
 
     formData.append("title", title);
     formData.append("content", content);
     formData.append("image", imageInput.current.files[0]);
     try {
       const { data } = await axiosReq.post("/posts/", formData);
+      console.log("Post created:", data); // ✅ Confirm post was created and has ID
       history.push(`/posts/${data.id}`);
     } catch (err) {
       console.log(err);
