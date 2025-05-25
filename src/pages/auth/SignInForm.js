@@ -16,6 +16,7 @@ import btnStyles from "../../styles/Button.module.css";
 import appStyles from "../../App.module.css";
 import { useSetCurrentUser } from "../../contexts/CurrentUserContext";
 import { useRedirect } from "../../hooks/useRedirect";
+import { setTokenTimestamp } from "src/utils/utils";
 
 const SignInForm = () => {
   const setCurrentUser = useSetCurrentUser();
@@ -25,10 +26,10 @@ const SignInForm = () => {
     password: "",
   });
   const { username, password } = signInData;
-
   const [errors, setErrors] = useState({});
-
   const history = useHistory();
+
+  //EVENTHANDLER - Submit
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -36,6 +37,7 @@ const SignInForm = () => {
       const { data } = await axios.post("/dj-rest-auth/login/", signInData);
       console.log("data", data);
       setCurrentUser(data.user);
+      setTokenTimestamp(data);
       history.goBack();
     } catch (err) {
       setErrors(err.response?.data);

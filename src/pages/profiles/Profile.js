@@ -4,7 +4,7 @@ import btnStyles from "../../styles/Button.module.css";
 import { useCurrentUser } from "src/contexts/CurrentUserContext";
 import { Link } from "react-router-dom";
 import Avatar from "src/components/Avatar";
-import { Button } from "react-bootstrap";
+import Button from "react-bootstrap/Button";
 import { useSetProfileData } from "src/contexts/ProfileDataContext";
 
 const Profile = (props) => {
